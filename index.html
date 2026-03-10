@@ -7,29 +7,14 @@
 <style>
 body{font-family:Arial,sans-serif;background:#111;color:white;text-align:center;padding:20px;margin:0;}
 .container{max-width:600px;margin:auto;background:#222;padding:20px;border-radius:20px;box-shadow:0 0 20px #0ff;}
-button{padding:12px 25px;margin:8px;font-size:16px;cursor:pointer;border:none;border-radius:12px;background:linear-gradient(90deg,#00f,#0ff);color:white;transition: transform 0.1s,box-shadow 0.1s;}
+button{padding:12px 25px;margin:8px;font-size:16px;cursor:pointer;border:none;border-radius:12px;background:linear-gradient(90deg,#00f,#0ff);color:white;}
 button:hover{transform:scale(1.05);box-shadow:0 0 10px #0ff;}
 input,select{padding:10px;margin:8px 0;width:80%;border-radius:10px;border:none;font-size:16px;}
 #progressbar-container{background:#333;height:10px;border-radius:5px;margin-bottom:15px;display:none;}
 #progressbar{height:10px;width:0%;background:#0ff;border-radius:5px;transition:width 0.3s;}
 #certificate{display:none;padding:20px;margin-top:20px;background:#0ff;color:#111;border-radius:20px;text-align:left;}
-
-.cert{
-background:white;
-color:#111;
-padding:30px;
-border-radius:20px;
-border:6px solid gold;
-box-shadow:0 0 25px gold;
-text-align:center;
-font-family:Georgia,serif;
-}
-
-.cert h2{
-color:#222;
-margin-bottom:20px;
-}
-  
+.cert{background:white;color:#111;padding:30px;border-radius:20px;border:6px solid gold;box-shadow:0 0 25px gold;text-align:center;font-family:Georgia,serif;}
+.cert h2{color:#222;margin-bottom:20px;}
 </style>
 </head>
 <body>
@@ -39,7 +24,7 @@ margin-bottom:20px;
 <div id="form-container">
 <p>Сначала заполните анкету:</p>
 <input type="text" id="name" placeholder="Ваше имя"><br>
-<input type="number" id="age" min="1" max="120" placeholder="Ваш возраст">
+<input type="number" id="age" min="1" max="120" placeholder="Ваш возраст"><br>
 <select id="experience">
 <option value="">Есть ли у вас опыт использовании ИИ</option>
 <option value="yes">Есть опыт</option>
@@ -60,12 +45,8 @@ margin-bottom:20px;
 </div>
 
 <script>
-let score=0, step=0, questions=[], allQuestions=[];
-
-// 100 вопросов
-allQuestions = [
-  // 16 физических
-  {q:"Можешь быстро пробежать 100 метров без усталости?", a:["Да","Нет"]},
+let score=0, step=0, questions=[], allQuestions=[
+{q:"Можешь быстро пробежать 100 метров без усталости?", a:["Да","Нет"]},
   {q:"Можешь поднять тяжелый предмет весом более 10 кг?", a:["Да","Нет"]},
   {q:"Легко переносишь длительные физические нагрузки?", a:["Да","Нет"]},
   {q:"Умеешь ползать и карабкаться через препятствия?", a:["Да","Нет"]},
@@ -173,26 +154,20 @@ allQuestions = [
   {q:"Можешь действовать нестандартно, когда стандартные способы не работают?", a:["Да","Нет"]}
 ];
 
-// Перемешивание
 function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
 
-// Запуск теста после анкеты
 function submitForm(){
   let name=document.getElementById("name").value.trim();
   let age=document.getElementById("age").value;
   let exp=document.getElementById("experience").value;
   if(!name||!age||!exp){alert("Заполните все поля!");return;}
-  
   document.getElementById("form-container").style.display="none";
   document.getElementById("progressbar-container").style.display="block";
-  
-  // Берём только 10 случайных вопросов
   questions = shuffle([...allQuestions]).slice(0,10);
   step=0; score=0;
   nextQuestion();
 }
 
-// Следующий вопрос
 function nextQuestion(){
   if(step>=questions.length){showResult(); return;}
   document.getElementById("progressbar").style.width=((step+1)/questions.length*100)+"%";
@@ -203,46 +178,42 @@ function nextQuestion(){
   document.getElementById("answers").innerHTML=html;
 }
 
-// Ответ
 function answer(i){if(i===0)score+=2; step++; nextQuestion();}
 
-// Результат + сертификат
 function showResult(){
   let percent=Math.floor((score/(questions.length*2))*100);
   let text="";
   if(percent<=30)text="🔴 Вы безполезны, машины вас убьют";
   else if(percent<=60)text="🟡 Есть шанс выжить";
   else text="🟢 Вы лучший друг ИИ";
-  
+
   document.getElementById("question").innerText="Ваш шанс выжить: "+percent+"%";
   document.getElementById("answers").innerHTML="<h2>"+text+"</h2>";
-  
-  document.getElementById("certificate").style.display="block";
-document.getElementById("certificate").innerHTML=
-`<h3>Сертификат</h3>
-<p><strong>Имя:</strong>${document.getElementById("name").value}</p>
-<p><strong>Возраст:</strong>${document.getElementById("age").value}</p>
-<p><strong>Опыт выживания:</strong>${document.getElementById("experience").value==="yes"?"Есть":"Нет"}</p>
-<p><strong>Любимый инструмент:</strong>${document.getElementById("favoriteTool").value}</p>
-<p><strong>Результат теста:</strong>${percent}%</p>
 
-<button onclick="location.reload()">🔄 Пройти тест заново</button>
-`;
+  document.getElementById("certificate").style.display="block";
+  document.getElementById("certificate").innerHTML=
+  `<div class="cert">
+  <h2>СЕРТИФИКАТ ВЫЖИВАНИЯ</h2>
+  <p><strong>Имя:</strong> ${document.getElementById("name").value}</p>
+  <p><strong>Возраст:</strong> ${document.getElementById("age").value}</p>
+  <p><strong>Опыт выживания:</strong> ${document.getElementById("experience").value==="yes"?"Есть":"Нет"}</p>
+  <p><strong>Любимый инструмент:</strong> ${document.getElementById("favoriteTool").value}</p>
+  <p><strong>Результат теста:</strong> ${percent}%</p>
+  <p>${text}</p>
+  <button onclick="downloadCertificate()">Скачать сертификат</button>
+  <button onclick="location.reload()">Пройти тест заново</button>
+  </div>`;
 }
 
 function downloadCertificate(){
-
-let element=document.getElementById("certificate");
-
-html2canvas(element).then(canvas=>{
-let link=document.createElement("a");
-link.download="ai-survival-certificate.png";
-link.href=canvas.toDataURL();
-link.click();
-});
-
+  let element=document.querySelector(".cert");
+  html2canvas(element).then(canvas=>{
+    let link=document.createElement("a");
+    link.download="certificate.png";
+    link.href=canvas.toDataURL();
+    link.click();
+  });
 }
-  
 </script>
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </body>
