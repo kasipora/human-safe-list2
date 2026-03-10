@@ -258,8 +258,28 @@ function nextQuestion(){
   document.getElementById("answers").innerHTML=html;
 }
 
-function answer(i){if(i===0)score+=2; step++; nextQuestion();}
+// Топ-10 хранится в localStorage
+function updateTop10(name, percent){
+  let top = JSON.parse(localStorage.getItem("top10") || "[]");
+  top.push({name:name, score:percent});
+  top.sort((a,b)=>b.score - a.score);
+  top = top.slice(0,10);
+  localStorage.setItem("top10", JSON.stringify(top));
+  return top;
+}
 
+function showTop10(){
+  let top = JSON.parse(localStorage.getItem("top10") || "[]");
+  if(top.length === 0) return "";
+  let html = "<h3>🏆 Топ 10 участников</h3><ol>";
+  top.forEach(item => {
+    html += `<li>${item.name} — ${item.score}%</li>`;
+  });
+  html += "</ol>";
+  return html;
+}
+
+// Результат
 function showResult(){
   let percent=Math.floor((score/(questions.length*2))*100);
   let text="";
@@ -270,25 +290,30 @@ function showResult(){
   document.getElementById("question").innerText="Ваш шанс выжить: "+percent+"%";
   document.getElementById("answers").innerHTML="<h2>"+text+"</h2>";
   
-  // QR-код
-  let name = document.getElementById("name").value.trim();
-  let qrData = encodeURIComponent(`Имя: ${name}, Результат: ${percent}%`);
-  let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}`;
-
+  let playerName = document.getElementById("name").value;
+  updateTop10(playerName, percent);
+  
   document.getElementById("certificate").style.display="block";
+  
   document.getElementById("certificate").innerHTML=`
-    <h2>Сертификат выживания</h2>
-    <p><strong>Имя:</strong> ${name}</p>
-    <p><strong>Возраст:</strong> ${document.getElementById("age").value}</p>
-    <p><strong>Опыт выживания:</strong> ${document.getElementById("experience").value==="yes"?"Есть":"Нет"}</p>
-    <p><strong>Любимый инструмент:</strong> ${document.getElementById("favoriteTool").value}</p>
-    <p><strong>Результат теста:</strong> ${percent}%</p>
-    <img class="qr-code" src="${qrUrl}" alt="QR-код">
-    <div class="signature">Выдан ИИ «Система выживания»</div>
-  `;
-  document.getElementById("download-btn").style.display = "inline-block";
+  <div class="cert">
+  <h2>Сертификат выживания</h2>
+  <div id="qr" class="qr"></div>
+  <p><strong>Имя:</strong> ${playerName}</p>
+  <p><strong>Возраст:</strong> ${document.getElementById("age").value}</p>
+  <p><strong>Опыт выживания:</strong> ${document.getElementById("experience").value==="yes"?"Есть":"Нет"}</p>
+  <p><strong>Любимый инструмент:</strong> ${document.getElementById("favoriteTool").value}</p>
+  <p><strong>Результат теста:</strong> ${percent}%</p>
+  ${showTop10()}
+  <button onclick="downloadCertificate()">💾 Скачать сертификат</button>
+  <button onclick="location.reload()">🔄 Пройти тест заново</button>
+  </div>`;
+  
+  // Создание QR-кода с именем и результатом
+  QRCode.toCanvas(document.getElementById("qr"), `Имя: ${playerName}\nРезультат: ${percent}%`, {width:100});
 }
 
+// Скачивание сертификата
 function downloadCertificate(){
   let element=document.getElementById("certificate");
   html2canvas(element).then(canvas=>{
