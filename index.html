@@ -224,8 +224,25 @@ function showResult(){
   <p><strong>Возраст:</strong>${document.getElementById("age").value}</p>
   <p><strong>Опыт выживания:</strong>${document.getElementById("experience").value==="yes"?"Есть":"Нет"}</p>
   <p><strong>Любимый инструмент:</strong>${document.getElementById("favoriteTool").value}</p>
-  <p><strong>Результат теста:</strong>${percent}%</p>`;
+  <p><strong>Результат теста:</strong>${percent}%</p>`
+  <button onclick="location.reload()">🔄 Пройти тест заново</button>
+    ;
 }
+
+function downloadCertificate(){
+
+let element=document.getElementById("certificate");
+
+html2canvas(element).then(canvas=>{
+let link=document.createElement("a");
+link.download="ai-survival-certificate.png";
+link.href=canvas.toDataURL();
+link.click();
+});
+
+}
+  
 </script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 </body>
 </html>
