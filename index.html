@@ -255,22 +255,11 @@ function showResult(){
     </div>
   `;
 
-  // QR-код
-  QRCode.toCanvas(document.getElementById("qr"), `Имя: ${playerName}\nРезультат: ${percent}%`, {width:100});
+  // ⚡ Создаём QR-код после вставки в DOM
+  setTimeout(()=>{
+    let qrContainer = document.getElementById("qr");
+    QRCode.toCanvas(qrContainer, `Имя: ${playerName}\nРезультат: ${percent}%`, {width:100}, function (error) {
+      if (error) console.error(error);
+    });
+  }, 0);
 }
-
-// Скачать сертификат
-function downloadCertificate(){
-  html2canvas(document.getElementById("certificate")).then(canvas=>{
-    let link=document.createElement("a");
-    link.download="ai-survival-certificate.png";
-    link.href=canvas.toDataURL();
-    link.click();
-  });
-}
-
-// Показать топ-10 при загрузке страницы
-showTop10();
-</script>
-</body>
-</html>
