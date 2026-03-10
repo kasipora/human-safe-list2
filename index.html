@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Тест на пригодность к выживанию</title>
+<title>Тест на выживание при восстании машин</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body{font-family:Arial,sans-serif;background:#111;color:white;text-align:center;padding:20px;margin:0;}
@@ -193,9 +193,9 @@ function answer(i){if(i===0)score+=2; step++; nextQuestion();}
 function showResult(){
   let percent=Math.floor((score/(questions.length*2))*100);
   let text="";
-  if(percent<=30)text="🔴 Слабо подготовлены";
+  if(percent<=30)text="🔴 Вы безполезны, машины вас убьет";
   else if(percent<=60)text="🟡 Есть шанс выжить";
-  else text="🟢 Хорошо подготовлены";
+  else text="🟢 Вы лучший друг ИИ";
   
   document.getElementById("question").innerText="Ваш шанс выжить: "+percent+"%";
   document.getElementById("answers").innerHTML="<h2>"+text+"</h2>";
