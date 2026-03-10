@@ -230,8 +230,8 @@ let score=0, step=0, questions=[], allQuestions=[
   {q:"Можешь действовать нестандартно, когда стандартные способы не работают?", a:["Да","Нет"]}
 ];
 
-let questions=[], step=0, score=0;
 
+// Перемешивание
 function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
 
 // Запуск теста после анкеты
@@ -244,7 +244,7 @@ function submitForm(){
   document.getElementById("form-container").style.display="none";
   document.getElementById("progressbar-container").style.display="block";
   
-  questions = shuffle([...allQuestions]).slice(0,10); // для теста 10 вопросов
+  questions = shuffle([...allQuestions]).slice(0,10); // для теста 5 вопросов
   step=0; score=0;
   nextQuestion();
 }
