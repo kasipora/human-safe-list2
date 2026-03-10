@@ -13,7 +13,6 @@ input,select{padding:10px;margin:8px 0;width:80%;border-radius:10px;border:none;
 #progressbar-container{background:#333;height:10px;border-radius:5px;margin-bottom:15px;display:none;}
 #progressbar{height:10px;width:0%;background:#0ff;border-radius:5px;transition:width 0.3s;}
 #certificate{display:none;padding:20px;margin-top:20px;background:#0ff;color:#111;border-radius:20px;text-align:left;position:relative;}
-
 .cert{
 background:white;
 color:#111;
@@ -25,9 +24,11 @@ text-align:center;
 font-family:Georgia,serif;
 position:relative;
 }
-
 .cert h2{color:#222;margin-bottom:20px;}
 .cert .qr{position:absolute;top:20px;right:20px;width:100px;height:100px;}
+#top10-container{margin-top:30px;}
+#top10-container h3{color:#0ff;}
+#top10-container ol{padding-left:20px;text-align:left;}
 </style>
 </head>
 <body>
@@ -55,12 +56,13 @@ position:relative;
 <p id="question"></p>
 <div id="answers"></div>
 <div id="certificate"></div>
+<div id="top10-container"></div>
 </div>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
-// Вопросы (можно расширить)
+// Вопросы (можно расширять)
 let allQuestions = [
 {q:"Можешь быстро пробежать 100 метров без усталости?", a:["Да","Нет"]},
   {q:"Можешь поднять тяжелый предмет весом более 10 кг?", a:["Да","Нет"]},
@@ -210,16 +212,18 @@ function updateTop10(name, percent){
   top.sort((a,b)=>b.score - a.score);
   top = top.slice(0,10);
   localStorage.setItem("top10", JSON.stringify(top));
-  return top;
+  showTop10();
 }
 
 function showTop10(){
   let top = JSON.parse(localStorage.getItem("top10") || "[]");
-  if(top.length===0) return "";
-  let html="<h3>🏆 Топ 10 участников</h3><ol>";
-  top.forEach(item=>{ html+=`<li>${item.name} — ${item.score}%</li>`; });
-  html+="</ol>";
-  return html;
+  let html="";
+  if(top.length>0){
+    html="<h3>🏆 Топ 10 участников</h3><ol>";
+    top.forEach(item=>{ html+=`<li>${item.name} — ${item.score}%</li>`; });
+    html+="</ol>";
+  }
+  document.getElementById("top10-container").innerHTML=html;
 }
 
 // Результат и сертификат
@@ -246,12 +250,12 @@ function showResult(){
     <p><strong>Опыт выживания:</strong> ${document.getElementById("experience").value==="yes"?"Есть":"Нет"}</p>
     <p><strong>Любимый инструмент:</strong> ${document.getElementById("favoriteTool").value}</p>
     <p><strong>Результат теста:</strong> ${percent}%</p>
-    ${showTop10()}
     <button onclick="downloadCertificate()">💾 Скачать сертификат</button>
     <button onclick="location.reload()">🔄 Пройти тест заново</button>
     </div>
   `;
 
+  // QR-код
   QRCode.toCanvas(document.getElementById("qr"), `Имя: ${playerName}\nРезультат: ${percent}%`, {width:100});
 }
 
@@ -264,6 +268,9 @@ function downloadCertificate(){
     link.click();
   });
 }
+
+// Показать топ-10 при загрузке страницы
+showTop10();
 </script>
 </body>
 </html>
