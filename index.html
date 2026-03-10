@@ -238,12 +238,17 @@ function submitForm(){
   let name = document.getElementById("name").value.trim();
   let age = document.getElementById("age").value;
   let exp = document.getElementById("experience").value;
-  if(!name || !age || !exp){ alert("Заполните все поля!"); return; }
+
+  if(!name || !age || !exp){ 
+    alert("Заполните все поля!");
+    return;
+  }
 
   document.getElementById("form-container").style.display = "none";
   document.getElementById("progressbar-container").style.display = "block";
 
-  questions = shuffle([...allQuestions]).slice(0, 5); // <-- здесь количество вопросов явно
+  // Перемешиваем все вопросы и берём первые 10
+  questions = shuffle([...allQuestions]).slice(0, 10);
   step = 0;
   score = 0;
   nextQuestion();
