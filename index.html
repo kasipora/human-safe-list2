@@ -189,13 +189,16 @@ function nextQuestion(){
 // Ответ
 function answer(i){if(i===0)score+=2; step++; nextQuestion();}
 
-// Результат + сертификат
+// Результат + сертификат с рангом
 function showResult(){
-  let percent=Math.floor((score/(questions.length*2))*100);
-  let text="";
-  if(percent<=30)text="🔴 Вы безполезны, машины вас убьют";
-  else if(percent<=60)text="🟡 Есть шанс выжить";
-  else text="🟢 Вы лучший друг ИИ";
+  // Общие возможные очки
+  let maxScore = questions.reduce((sum,q)=>sum+Math.max(...q.points),0);
+  let percent = Math.floor((score/maxScore)*100);
+  
+  let text="", rank="";
+  if(percent<=30){text="🔴 Слабо подготовлены"; rank="Новичок выживания";}
+  else if(percent<=60){text="🟡 Есть шанс выжить"; rank="Выживший";}
+  else {text="🟢 Хорошо подготовлены"; rank="Эксперт по выживанию";}
   
   document.getElementById("question").innerText="Ваш шанс выжить: "+percent+"%";
   document.getElementById("answers").innerHTML="<h2>"+text+"</h2>";
@@ -207,7 +210,9 @@ function showResult(){
   <p><strong>Возраст:</strong>${document.getElementById("age").value}</p>
   <p><strong>Опыт выживания:</strong>${document.getElementById("experience").value==="yes"?"Есть":"Нет"}</p>
   <p><strong>Любимый инструмент:</strong>${document.getElementById("favoriteTool").value}</p>
-  <p><strong>Результат теста:</strong>${percent}%</p>`;
+  <p><strong>Результат теста:</strong>${percent}%</p>
+  <p><strong>Ранг:</strong>${rank}</p>`;
+}
 }
 </script>
 </body>
