@@ -5,93 +5,22 @@
 <title>Тест на выживание при восстании машин</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background: #111;
-  color: white;
-  text-align: center;
-  padding: 20px;
-  margin: 0;
-}
-.container {
-  max-width: 700px;
-  margin: auto;
-  background: #222;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 0 20px #0ff;
-}
-button {
-  padding: 12px 25px;
-  margin: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg,#00f,#0ff);
-  color: white;
-  transition: transform 0.1s, box-shadow 0.1s;
-}
-button:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px #0ff;
-}
-input, select {
-  padding: 10px;
-  margin: 8px 0;
-  width: 80%;
-  border-radius: 10px;
-  border: none;
-  font-size: 16px;
-}
-#progressbar-container {
-  background: #333;
-  height: 10px;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  display: none;
-}
-#progressbar {
-  height: 10px;
-  width: 0%;
-  background: #0ff;
-  border-radius: 5px;
-  transition: width 0.3s;
-}
-#certificate {
-  display: none;
-  padding: 20px;
-  margin-top: 20px;
-  background: linear-gradient(135deg, #fff7e6, #ffe0b3);
-  color: #111;
-  border-radius: 20px;
-  text-align: center;
-  font-family: 'Georgia', serif;
-  border: 6px solid gold;
-  box-shadow: 0 0 25px gold;
-  position: relative;
-}
-#certificate h2 {
-  margin-bottom: 10px;
-  color: #222;
-}
-#certificate p {
-  margin: 6px 0;
-  font-size: 16px;
-}
-.qr-code {
-  margin-top: 15px;
-}
-.signature {
-  margin-top: 20px;
-  text-align: right;
-  font-style: italic;
-  font-size: 14px;
-}
+body { font-family: Arial, sans-serif; background: #111; color: white; text-align: center; padding: 20px; margin: 0; }
+.container { max-width: 700px; margin: auto; background: #222; padding: 20px; border-radius: 20px; box-shadow: 0 0 20px #0ff; }
+button { padding: 12px 25px; margin: 8px; font-size: 16px; cursor: pointer; border: none; border-radius: 12px; background: linear-gradient(90deg,#00f,#0ff); color: white; transition: transform 0.1s, box-shadow 0.1s; }
+button:hover { transform: scale(1.05); box-shadow: 0 0 10px #0ff; }
+input, select { padding: 10px; margin: 8px 0; width: 80%; border-radius: 10px; border: none; font-size: 16px; }
+#progressbar-container { background: #333; height: 10px; border-radius: 5px; margin-bottom: 15px; display: none; }
+#progressbar { height: 10px; width: 0%; background: #0ff; border-radius: 5px; transition: width 0.3s; }
+#certificate { display: none; padding: 20px; margin-top: 20px; background: linear-gradient(135deg, #fff7e6, #ffe0b3); color: #111; border-radius: 20px; text-align: center; font-family: 'Georgia', serif; border: 6px solid gold; box-shadow: 0 0 25px gold; position: relative; }
+#certificate h2 { margin-bottom: 10px; color: #222; }
+#certificate p { margin: 6px 0; font-size: 16px; }
+.qr-code { margin-top: 15px; }
+.signature { margin-top: 20px; text-align: right; font-style: italic; font-size: 14px; }
+#buttons-container { margin-top: 15px; }
 </style>
 </head>
 <body>
-
 <div class="container">
 <h1>Тест на выживание при восстании машин</h1>
 
@@ -115,8 +44,12 @@ input, select {
 <p id="progress"></p>
 <p id="question"></p>
 <div id="answers"></div>
+
 <div id="certificate"></div>
+<div id="buttons-container">
 <button id="download-btn" style="display:none;" onclick="downloadCertificate()">💾 Скачать сертификат</button>
+<button id="share-btn" style="display:none;" onclick="shareCertificate()">📤 Поделиться</button>
+</div>
 </div>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
@@ -230,21 +163,21 @@ let score=0, step=0, questions=[], allQuestions=[
   {q:"Можешь действовать нестандартно, когда стандартные способы не работают?", a:["Да","Нет"]}
 ];
 
-
 // Перемешивание
 function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}return array;}
 
-// Запуск теста после анкеты
+// Запуск теста
 function submitForm(){
   let name=document.getElementById("name").value.trim();
   let age=document.getElementById("age").value;
   let exp=document.getElementById("experience").value;
-  if(!name||!age||!exp){alert("Заполните все поля!");return;}
-  
+  if(name === "" || age === "" || exp === ""){
+    alert("Заполните все поля!");
+    return;
+  }
   document.getElementById("form-container").style.display="none";
   document.getElementById("progressbar-container").style.display="block";
-  
-  questions = shuffle([...allQuestions]).slice(0,10); // для теста 5 вопросов
+  questions = shuffle([...allQuestions]).slice(0,10); 
   step=0; score=0;
   nextQuestion();
 }
@@ -254,24 +187,33 @@ function nextQuestion(){
   document.getElementById("progressbar").style.width=((step+1)/questions.length*100)+"%";
   document.getElementById("progress").innerText="Вопрос "+(step+1)+" из "+questions.length;
   document.getElementById("question").innerText=questions[step].q;
-  let html="";
-  questions[step].a.forEach((ans,i)=>{html+=`<button onclick="answer(${i})">${ans}</button>`;});
-  document.getElementById("answers").innerHTML=html;
+
+  let answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+  questions[step].a.forEach((ans, i) => {
+    let btn = document.createElement("button");
+    btn.innerText = ans;
+    btn.onclick = () => answer(i);
+    answersDiv.appendChild(btn);
+  });
 }
 
-function answer(i){if(i===0)score+=2; step++; nextQuestion();}
+function answer(i){
+  if(i===0) score+=2;
+  step++;
+  nextQuestion();
+}
 
 function showResult(){
   let percent=Math.floor((score/(questions.length*2))*100);
   let text="";
-  if(percent<=30)text="🔴 Вы безполезны, машины вас убьют";
-  else if(percent<=60)text="🟡 Есть шанс выжить";
+  if(percent<=30) text="🔴 Вы безполезны, машины вас убьют";
+  else if(percent<=60) text="🟡 Есть шанс выжить";
   else text="🟢 Вы лучший друг ИИ";
-  
+
   document.getElementById("question").innerText="Ваш шанс выжить: "+percent+"%";
   document.getElementById("answers").innerHTML="<h2>"+text+"</h2>";
-  
-  // QR-код
+
   let name = document.getElementById("name").value.trim();
   let qrData = encodeURIComponent(`Имя: ${name}, Результат: ${percent}%`);
   let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${qrData}`;
@@ -287,7 +229,9 @@ function showResult(){
     <img class="qr-code" src="${qrUrl}" alt="QR-код">
     <div class="signature">Выдан ИИ «Система выживания»</div>
   `;
-  document.getElementById("download-btn").style.display = "inline-block";
+
+  document.getElementById("download-btn").style.display="inline-block";
+  document.getElementById("share-btn").style.display="inline-block";
 }
 
 function downloadCertificate(){
@@ -297,6 +241,20 @@ function downloadCertificate(){
     link.download="ai-survival-certificate.png";
     link.href=canvas.toDataURL();
     link.click();
+  });
+}
+
+function shareCertificate(){
+  let element=document.getElementById("certificate");
+  html2canvas(element).then(canvas=>{
+    canvas.toBlob(blob=>{
+      const file = new File([blob], "ai-survival-certificate.png", { type: "image/png" });
+      if(navigator.canShare && navigator.canShare({ files: [file] })){
+        navigator.share({ files: [file], title: "Мой сертификат выживания", text: "Посмотрите мой результат теста!" });
+      } else {
+        alert("Поделиться можно только на поддерживаемых устройствах.\nФайл можно скачать и отправить вручную.");
+      }
+    });
   });
 }
 </script>
