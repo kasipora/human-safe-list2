@@ -84,69 +84,27 @@ nextQuestion()
 
 }
 
-function nextQuestion(){
-
-if(step >= questions.length){
-
-showResult()
-
-return
-
-}
-
-document.getElementById("progress").innerText =
-"Вопрос " + (step+1) + " из " + questions.length  
-document.getElementById("question").innerText = questions[step].q
-
-let html = ""
-
-questions[step].a.forEach((answer,i)=>{
-
-html += `<button onclick="answer(${i})">${answer}</button>`
-
-})
-
-document.getElementById("answers").innerHTML = html
-
-}
-
-function answer(i){
-
-if(i==0){
-score +=2
-}
-
-step++
-
-nextQuestion()
-
-}
-
 function showResult(){
 
-let text = ""
+    let percent = Math.floor((score/(questions.length*2))*100)
+    let text = ""
 
-if(score <=3){
-text="🔴 Роботы тебя ищут"
-}
+    if(score <=3){
+        text="🔴 Роботы тебя ищут"
+    }
+    else if(score <=7){
+        text="🟡 Есть шанс выжить"
+    }
+    else{
+        text="🟢 Роботы тебя пощадят"
+    }
 
-else if(score <=7){
-text="🟡 Есть шанс выжить"
-}
-
-else{
-text="🟢 Роботы тебя пощадят"
-}
-
-document.getElementById("question").innerText =
-let percent = Math.floor((score/(questions.length*2))*100)
-
-"Твой шанс выжить: "+percent+"%"
-document.getElementById("answers").innerHTML =
-"<h2>"+text+"</h2>"
+    document.getElementById("question").innerText =
+        "Твой шанс выжить: "+percent+"%"
+    document.getElementById("answers").innerHTML =
+        "<h2>"+text+"</h2>"
 
 }
-
 </script>
 
 </body>
