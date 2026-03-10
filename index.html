@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Тест на выживание</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#111;
+color:white;
+text-align:center;
+padding:40px;
+}
+
+button{
+padding:15px;
+margin:10px;
+font-size:18px;
+cursor:pointer;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Тест на выживание при восстании машин</h1>
+
+<p id="question">Нажми начать</p>
+
+<button onclick="startTest()">Начать тест</button>
+
+<div id="answers"></div>
+
+</div>
+
+<script>
+
+let score = 0
+let step = 0
+
+const questions = [
+
+{
+q:"Ты умеешь прятаться?",
+a:["Да","Нет"]
+},
+
+{
+q:"Ты умеешь чинить технику?",
+a:["Да","Нет"]
+},
+
+{
+q:"Ты умеешь взламывать системы?",
+a:["Да","Нет"]
+},
+
+{
+q:"Ты быстро бегаешь?",
+a:["Да","Нет"]
+},
+
+{
+q:"Ты умеешь договариваться?",
+a:["Да","Нет"]
+}
+
+]
+
+function startTest(){
+
+score = 0
+step = 0
+
+nextQuestion()
+
+}
+
+function nextQuestion(){
+
+if(step >= questions.length){
+
+showResult()
+
+return
+
+}
+
+document.getElementById("question").innerText = questions[step].q
+
+let html = ""
+
+questions[step].a.forEach((answer,i)=>{
+
+html += `<button onclick="answer(${i})">${answer}</button>`
+
+})
+
+document.getElementById("answers").innerHTML = html
+
+}
+
+function answer(i){
+
+if(i==0){
+score +=2
+}
+
+step++
+
+nextQuestion()
+
+}
+
+function showResult(){
+
+let text = ""
+
+if(score <=3){
+text="🔴 Роботы тебя ищут"
+}
+
+else if(score <=7){
+text="🟡 Есть шанс выжить"
+}
+
+else{
+text="🟢 Роботы тебя пощадят"
+}
+
+document.getElementById("question").innerText =
+"Твой шанс выжить: "+score+"/10"
+
+document.getElementById("answers").innerHTML =
+"<h2>"+text+"</h2>"
+
+}
+
+</script>
+
+</body>
+</html>
