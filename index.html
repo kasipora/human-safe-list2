@@ -57,6 +57,15 @@ button:hover{
   from {opacity:0;}
   to {opacity:1;}
 }
+#certificate{
+  display:none;
+  padding:20px;
+  margin-top:20px;
+  background:#0ff;
+  color:#111;
+  border-radius:20px;
+  animation:fadeIn 1s;
+}
 </style>
 </head>
 <body>
@@ -74,13 +83,14 @@ button:hover{
 <button onclick="startTest()">Начать тест</button>
 <div id="answers"></div>
 
+<div id="certificate"></div>
+
 </div>
 
 <script>
 let score = 0
 let step = 0
-
-const questions = [
+let questions = [
 { q:"Ты умеешь прятаться?", a:["Да","Нет"] },
 { q:"Ты умеешь чинить технику?", a:["Да","Нет"] },
 { q:"Ты умеешь взламывать системы?", a:["Да","Нет"] },
@@ -93,10 +103,21 @@ const questions = [
 { q:"Ты умеешь сохранять спокойствие в опасности?", a:["Да","Нет"] }
 ]
 
+// Перемешать вопросы случайно
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
+  return array;
+}
+
 // Запуск теста
 function startTest(){
   score = 0
   step = 0
+  questions = shuffle(questions)
+  document.getElementById("certificate").style.display="none"
   nextQuestion()
 }
 
@@ -126,7 +147,7 @@ function answer(i){
   nextQuestion()
 }
 
-// Результат
+// Результат и сертификат
 function showResult(){
   let percent = Math.floor((score/(questions.length*2))*100)
   let text = ""
@@ -139,10 +160,21 @@ function showResult(){
   else{
       text="🟢 Роботы тебя пощадят"
   }
+
   document.getElementById("question").innerText =
       "Твой шанс выжить: "+percent+"%"
   document.getElementById("answers").innerHTML =
       "<h2 style='animation:fadeIn 1s'>"+text+"</h2>"
+
+  // Сертификат для высоких результатов
+  if(percent >= 70){
+    let name = prompt("Введите своё имя для сертификата:")
+    document.getElementById("certificate").innerHTML =
+      `<h2>🏆 Поздравляем, ${name}!</h2><p>Выживший при восстании машин!</p>`
+    document.getElementById("certificate").style.display="block"
+  } else {
+    document.getElementById("certificate").style.display="none"
+  }
 }
 </script>
 
