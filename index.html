@@ -17,14 +17,14 @@ input,select{padding:10px;margin:8px 0;width:80%;border-radius:10px;border:none;
 </head>
 <body>
 <div class="container">
-<h1>Тест на пригодность к выживанию</h1>
+<h1>Тест на выживание при восстании машин</h1>
 
 <div id="form-container">
 <p>Сначала заполните анкету:</p>
 <input type="text" id="name" placeholder="Ваше имя"><br>
 <input type="number" id="age" placeholder="Ваш возраст"><br>
 <select id="experience">
-<option value="">Выберите опыт выживания</option>
+<option value="">Есть ли у вас опыт использовании ИИ</option>
 <option value="yes">Есть опыт</option>
 <option value="no">Нет опыта</option>
 </select><br>
@@ -193,7 +193,7 @@ function answer(i){if(i===0)score+=2; step++; nextQuestion();}
 function showResult(){
   let percent=Math.floor((score/(questions.length*2))*100);
   let text="";
-  if(percent<=30)text="🔴 Вы безполезны, машины вас убьет";
+  if(percent<=30)text="🔴 Вы безполезны, машины вас убьют";
   else if(percent<=60)text="🟡 Есть шанс выжить";
   else text="🟢 Вы лучший друг ИИ";
   
