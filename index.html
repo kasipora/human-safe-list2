@@ -243,7 +243,7 @@ function submitForm(){
   document.getElementById("form-container").style.display="none";
   document.getElementById("progressbar-container").style.display="block";
   
-  questions = shuffle([...allQuestions]).slice(0,5); // для теста 5 вопросов
+  questions = shuffle([...allQuestions]).slice(0,10); // для теста 10 вопросов
   step=0; score=0;
   nextQuestion();
 }
